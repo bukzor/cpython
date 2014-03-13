@@ -1,0 +1,2 @@
+#!/bin/bash
+exec ./python Lib/test/regrtest.py -v test_future_encoding
