@@ -1,2 +1,3 @@
 #!/bin/bash
-exec ./python Lib/test/regrtest.py -v test_future_encoding
+make -j36 && \
+    exec ./python Lib/test/regrtest.py -v test_future_encoding
