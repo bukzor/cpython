@@ -5,6 +5,7 @@
 *.pyd
 *.pyo
 *.rej
+.*.sw[a-z]
 *~
 Doc/build/
 Doc/tools/docutils/
