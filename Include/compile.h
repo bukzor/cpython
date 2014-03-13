@@ -26,6 +26,7 @@ typedef struct {
 #define FUTURE_WITH_STATEMENT "with_statement"
 #define FUTURE_PRINT_FUNCTION "print_function"
 #define FUTURE_UNICODE_LITERALS "unicode_literals"
+#define FUTURE_EXPLICIT_ENCODING "explicit_encoding"
 
 
 struct _mod; /* Declare the existence of this type */

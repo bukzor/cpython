@@ -52,6 +52,7 @@ typedef struct {
 #define CO_FUTURE_WITH_STATEMENT  0x8000
 #define CO_FUTURE_PRINT_FUNCTION  0x10000
 #define CO_FUTURE_UNICODE_LITERALS 0x20000
+#define CO_FUTURE_EXPLICIT_ENCODING 0x40000
 
 /* This should be defined if a future statement modifies the syntax.
    For example, when a keyword is added.

@@ -210,6 +210,8 @@ future_hack(parser_state *ps)
                 ps->p_flags |= CO_FUTURE_PRINT_FUNCTION;
             } else if (strcmp(str_ch, FUTURE_UNICODE_LITERALS) == 0) {
                 ps->p_flags |= CO_FUTURE_UNICODE_LITERALS;
+            } else if (strcmp(str_ch, FUTURE_EXPLICIT_ENCODING) == 0) {
+                ps->p_flags |= CO_FUTURE_EXPLICIT_ENCODING;
             }
         }
     }
