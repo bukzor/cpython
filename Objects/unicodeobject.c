@@ -1152,9 +1152,17 @@ PyObject *PyUnicode_FromObject(register PyObject *obj)
         /* For a Unicode subtype that's not a Unicode object,
            return a true Unicode object with the same data. */
         return PyUnicode_FromUnicode(PyUnicode_AS_UNICODE(obj),
-                                     PyUnicode_GET_SIZE(obj));
+                              PyUnicode_GET_SIZE(obj));
     }
-    return PyUnicode_FromEncodedObject(obj, NULL, "strict");
+
+    /* TODO: look at the future flags in the right scope */
+    if (0) {
+        return PyUnicode_FromEncodedObject(obj, NULL, "strict");
+    } else {
+        PyErr_SetString(PyExc_TypeError,
+                        "Can't convert 'bytes' object to str implicitly");
+        return NULL;
+    }
 }
 
 PyObject *PyUnicode_FromEncodedObject(register PyObject *obj,
