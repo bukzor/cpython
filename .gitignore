@@ -38,6 +38,8 @@ config.log
 config.status
 libpython*.a
 libpython*.so*
+platform
+pybuilddir.txt
 pyconfig.h
 python
 python-gdb.py
