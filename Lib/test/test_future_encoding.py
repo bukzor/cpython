@@ -1,9 +1,14 @@
+# coding:UTF-9
 # Does it crash??
 from __future__ import explicit_encoding
 
 import unittest
 from . import test_support
 
+# A US-ASCII string.
+ASCII = b'Detroit'
+# A nice non-latin1 string.
+UNICODE = u'Łódź'
 
 class TestExplicitEncoding(unittest.TestCase):
 
@@ -15,15 +20,24 @@ class TestExplicitEncoding(unittest.TestCase):
         self.assertRaisesRegexp(
             TypeError,
             "^Can't convert 'bytes' object to str implicitly$",
-            b'foo'.__add__,
-            u'bar',
+            ASCII.__add__,
+            UNICODE,
         )
         self.assertRaisesRegexp(
             TypeError,
             "^Can't convert 'bytes' object to str implicitly$",
-            u'foo'.__add__,
-            b'bar',
+            UNICODE.__add__,
+            ASCII,
         )
+    
+    def test_decoding(self):
+        self.assertRaisesRegexp(
+            TypeError,
+            "^decoding Unicode is not supported",
+            ASCII.decode,
+            'US-ASCII',
+        )
+
 
 
 
