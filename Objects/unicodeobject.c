@@ -44,6 +44,7 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "unicodeobject.h"
 #include "ucnhash.h"
+#include "frameobject.h"
 
 #ifdef MS_WINDOWS
 #include <windows.h>
@@ -1133,7 +1134,7 @@ PyObject *PyUnicode_FromOrdinal(int ordinal)
                         "unichr() arg not in range(0x10000) "
                         "(narrow Python build)");
         return NULL;
-    }
+    } 
 #endif
 
     s[0] = (Py_UNICODE)ordinal;
@@ -1155,8 +1156,12 @@ PyObject *PyUnicode_FromObject(register PyObject *obj)
                               PyUnicode_GET_SIZE(obj));
     }
 
-    /* TODO: look at the future flags in the right scope */
-    if (0) {
+    PyThreadState *state = PyThreadState_Get();
+    PyFrameObject *frame = state->frame;
+    PyCodeObject *f_code = frame->f_code;
+    int co_flags = f_code->co_flags;
+
+    if (!(co_flags & CO_FUTURE_EXPLICIT_ENCODING)) {
         return PyUnicode_FromEncodedObject(obj, NULL, "strict");
     } else {
         PyErr_SetString(PyExc_TypeError,
