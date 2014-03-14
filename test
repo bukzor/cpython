@@ -1,5 +1,8 @@
 #!/bin/bash
 GDB=
 #GDB="gdb --args"
+
+# run it twice, once without, once with pyc files.
 make -j36 all pycremoval && \
-    exec $GDB ./python Lib/test/regrtest.py -v test_future_encoding
+    $GDB ./python Lib/test/regrtest.py -v test_future_encoding \
+    $GDB ./python Lib/test/regrtest.py -v test_future_encoding

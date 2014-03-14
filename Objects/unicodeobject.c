@@ -1153,7 +1153,7 @@ PyObject *PyUnicode_FromObject(register PyObject *obj)
         /* For a Unicode subtype that's not a Unicode object,
            return a true Unicode object with the same data. */
         return PyUnicode_FromUnicode(PyUnicode_AS_UNICODE(obj),
-                              PyUnicode_GET_SIZE(obj));
+                                     PyUnicode_GET_SIZE(obj));
     }
 
     PyThreadState *state = PyThreadState_Get();
