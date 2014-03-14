@@ -15,6 +15,9 @@ def concat_explicit(a, b):
     return a + b
 
 class TestExplicitEncoding(unittest.TestCase):
+    # TODO tests:
+    #  * getattr using unicode attr name
+    #  * .encode using unicode codec name
 
     def test_doesnt_crash(self):
         self.assertTrue(True)
