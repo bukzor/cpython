@@ -2,8 +2,6 @@
 # Does it crash??
 from __future__ import explicit_encoding
 
-
-
 import unittest
 from . import test_support
 
@@ -13,14 +11,21 @@ ASCII = b'Detroit'
 UNICODE = u'Łódź'
 
 
+"""The *_explicit functions defined below have the semantics of
+__future__.explicit_encoding because they're defined in *this* module.
+We have to do this to test the module-scoped semantics.
+"""
 def concat_explicit(a, b):
-    # We need to do the operation in *this* module to test the module-scoped semantics.
     return a + b
 
-
 def decode_explicit(u, encoding):
-    # decodes a unicode string
     return u.decode(encoding)
+
+def equals_explicit(a, b):
+    return a == b
+
+def get_explicit(d, v):
+    return d.get(v)
 
 
 class TestExplicitEncoding(unittest.TestCase):
@@ -69,7 +74,6 @@ class TestExplicitEncoding(unittest.TestCase):
             'US-ASCII',
         )
 
-
     def test_peephole(self):
         """During peephole optimization, there is no frame."""
         # TODO make sure it fails when segfault-check is done wrong.
@@ -81,6 +85,43 @@ class TestExplicitEncoding(unittest.TestCase):
                 flags=__future__.CO_FUTURE_EXPLICIT_ENCODING,
                 dont_inherit=True,
         )
+
+    def test_unicode_codec_names(self):
+        self.assertEqual(
+            UNICODE.encode(u'UTF-8'),
+            UNICODE.encode(b'UTF-8'),
+        )
+
+        self.assertEqual(
+            ASCII.decode(u'US-ASCII'),
+            ASCII.decode(b'US-ASCII'),
+        )
+
+
+    def test_dict_get(self):
+        d = {b'foo': 'bar', u'baz': 'quux'}
+
+        self.assertEqual('bar', get_explicit(d, b'foo'))
+        self.assertEqual(None, get_explicit(d, u'foo'))
+
+        self.assertEqual('quux', get_explicit(d, u'baz'))
+        self.assertEqual(None, get_explicit(d, b'baz'))
+
+
+    def test_unicode_attr_names(self):
+
+        class Foo(object):
+            bar = 'baz'
+
+        self.assertEqual('baz', getattr(Foo(), u'bar'))
+        self.assertEqual('baz', getattr(Foo(), b'bar'))
+
+
+    def test_comparison(self):
+        """In Python 3 str and byte comparison always evaluates to false."""
+        self.assertIs(equals_explicit(b'foo', b'foo'), True)
+        self.assertIs(equals_explicit(u'bar', u'bar'), True)
+        self.assertIs(equals_explicit(u'bar', b'bar'), False)
 
 
 def test_main():
