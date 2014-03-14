@@ -1,4 +1,4 @@
-# coding:UTF-9
+# coding:UTF-8
 # Does it crash??
 from __future__ import explicit_encoding
 
@@ -29,7 +29,7 @@ class TestExplicitEncoding(unittest.TestCase):
             UNICODE.__add__,
             ASCII,
         )
-    
+
     def test_decoding(self):
         self.assertRaisesRegexp(
             TypeError,
