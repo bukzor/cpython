@@ -117,6 +117,7 @@ PyAPI_FUNC(void) PyThreadState_DeleteCurrent(void);
 #endif
 
 PyAPI_FUNC(PyThreadState *) PyThreadState_Get(void);
+PyAPI_FUNC(int) PyThreadState_GetCOFlags(void);
 PyAPI_FUNC(PyThreadState *) PyThreadState_Swap(PyThreadState *);
 PyAPI_FUNC(PyObject *) PyThreadState_GetDict(void);
 PyAPI_FUNC(int) PyThreadState_SetAsyncExc(long, PyObject *);

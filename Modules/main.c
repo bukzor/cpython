@@ -353,6 +353,11 @@ Py_Main(int argc, char **argv)
                 _Py_QnewFlag = 1;
                 break;
             }
+            if (strcmp(_PyOS_optarg, "hack13") == 0) {
+                /* This only affects __main__ */
+                cf.cf_flags |= CO_FUTURE_EXPLICIT_ENCODING;
+                break;
+            }
             fprintf(stderr,
                 "-Q option should be `-Qold', "
                 "`-Qwarn', `-Qwarnall', or `-Qnew' only\n");

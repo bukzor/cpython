@@ -70,5 +70,11 @@ class TestExplicitEncoding(unittest.TestCase):
         )
 
 
+    def test_peephole(self):
+        """During peephole optimization, there is no frame."""
+        import __future__
+        compile('''b"a" + u"b"''', '<string>', 'single', flags=__future__.CO_FUTURE_EXPLICIT_ENCODING)
+
+
 def test_main():
     test_support.run_unittest(TestExplicitEncoding)

@@ -44,7 +44,6 @@ OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include "unicodeobject.h"
 #include "ucnhash.h"
-#include "frameobject.h"
 
 #ifdef MS_WINDOWS
 #include <windows.h>
@@ -1134,7 +1133,7 @@ PyObject *PyUnicode_FromOrdinal(int ordinal)
                         "unichr() arg not in range(0x10000) "
                         "(narrow Python build)");
         return NULL;
-    } 
+    }
 #endif
 
     s[0] = (Py_UNICODE)ordinal;
@@ -1156,11 +1155,7 @@ PyObject *PyUnicode_FromObject(register PyObject *obj)
                                      PyUnicode_GET_SIZE(obj));
     }
 
-    PyThreadState *state = PyThreadState_Get();
-    PyFrameObject *frame = state->frame;
-    PyCodeObject *f_code = frame->f_code;
-    int co_flags = f_code->co_flags;
-
+    int co_flags = PyThreadState_GetCOFlags();
     if (!(co_flags & CO_FUTURE_EXPLICIT_ENCODING)) {
         return PyUnicode_FromEncodedObject(obj, NULL, "strict");
     } else {
@@ -6457,11 +6452,7 @@ unicode_decode(PyUnicodeObject *self, PyObject *args, PyObject *kwargs)
     char *errors = NULL;
     PyObject *v;
 
-    PyThreadState *state = PyThreadState_Get();
-    PyFrameObject *frame = state->frame;
-    PyCodeObject *f_code = frame->f_code;
-    int co_flags = f_code->co_flags;
-
+    int co_flags = PyThreadState_GetCOFlags();
     if (co_flags & CO_FUTURE_EXPLICIT_ENCODING) {
         PyErr_SetString(PyExc_TypeError,
                         "decoding Unicode is not supported");

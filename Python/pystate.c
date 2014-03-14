@@ -2,6 +2,7 @@
 /* Thread and interpreter state structures and their interfaces */
 
 #include "Python.h"
+#include "frameobject.h"
 
 /* --------------------------------------------------------------------------
 CAUTION
@@ -330,6 +331,23 @@ PyThreadState_Get(void)
         Py_FatalError("PyThreadState_Get: no current thread");
 
     return _PyThreadState_Current;
+}
+
+/* Get the code flags (co_flags) of the most-recent frame.
+ * This is used for lexically scoped future-features.
+ */
+int
+PyThreadState_GetCOFlags(void)
+{
+    PyThreadState *state = PyThreadState_Get();
+    PyFrameObject *frame = state->frame;
+    if (frame == NULL) {
+        PyErr_SetString(PyExc_SystemError,
+                        "could not find frame");
+        return NULL;
+    }
+    PyCodeObject *f_code = frame->f_code;
+    return f_code->co_flags;
 }
 
 
