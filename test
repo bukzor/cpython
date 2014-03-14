@@ -4,5 +4,5 @@ GDB=
 
 # run it twice, once without, once with pyc files.
 make -j36 all pycremoval && \
-    $GDB ./python Lib/test/regrtest.py -v test_future_encoding \
-    $GDB ./python Lib/test/regrtest.py -v test_future_encoding
+    $GDB ./python -E -tt -Wd -3 -m test.regrtest -v test_future_encoding && \
+    $GDB ./python -E -tt -Wd -3 -m test.regrtest -v test_future_encoding
