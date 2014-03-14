@@ -1,3 +1,5 @@
 #!/bin/bash
-make -j36 && \
-    exec ./python Lib/test/regrtest.py -v test_future_encoding
+GDB=
+#GDB="gdb --args"
+make -j36 all pycremoval && \
+    exec $GDB ./python Lib/test/regrtest.py -v test_future_encoding
