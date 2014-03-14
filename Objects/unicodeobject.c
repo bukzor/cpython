@@ -6457,6 +6457,17 @@ unicode_decode(PyUnicodeObject *self, PyObject *args, PyObject *kwargs)
     char *errors = NULL;
     PyObject *v;
 
+    PyThreadState *state = PyThreadState_Get();
+    PyFrameObject *frame = state->frame;
+    PyCodeObject *f_code = frame->f_code;
+    int co_flags = f_code->co_flags;
+
+    if (co_flags & CO_FUTURE_EXPLICIT_ENCODING) {
+        PyErr_SetString(PyExc_TypeError,
+                        "decoding Unicode is not supported");
+        return NULL;
+    }
+
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|ss:decode",
                                      kwlist, &encoding, &errors))
         return NULL;

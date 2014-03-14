@@ -2,6 +2,8 @@
 # Does it crash??
 from __future__ import explicit_encoding
 
+
+
 import unittest
 from . import test_support
 
@@ -10,9 +12,16 @@ ASCII = b'Detroit'
 # A nice non-latin1 string.
 UNICODE = u'Łódź'
 
+
 def concat_explicit(a, b):
     # We need to do the operation in *this* module to test the module-scoped semantics.
     return a + b
+
+
+def decode_explicit(u, encoding):
+    # decodes a unicode string
+    return u.decode(encoding)
+
 
 class TestExplicitEncoding(unittest.TestCase):
     # TODO tests:
@@ -55,11 +64,10 @@ class TestExplicitEncoding(unittest.TestCase):
         self.assertRaisesRegexp(
             TypeError,
             "^decoding Unicode is not supported",
-            UNICODE.decode,
+            decode_explicit,
+            UNICODE,
             'US-ASCII',
         )
-
-
 
 
 def test_main():
