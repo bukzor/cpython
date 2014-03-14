@@ -34,14 +34,14 @@ class TestExplicitEncoding(unittest.TestCase):
     def test_concat_explicit(self):
         self.assertRaisesRegexp(
             TypeError,
-            "^Can't convert 'bytes' object to str implicitly$",
+            "^Can't convert 'str' object to unicode implicitly$",
             concat_explicit,
             ASCII,
             UNICODE,
         )
         self.assertRaisesRegexp(
             TypeError,
-            "^Can't convert 'bytes' object to str implicitly$",
+            "^Can't convert 'str' object to unicode implicitly$",
             concat_explicit,
             UNICODE,
             ASCII,
@@ -72,8 +72,15 @@ class TestExplicitEncoding(unittest.TestCase):
 
     def test_peephole(self):
         """During peephole optimization, there is no frame."""
+        # TODO make sure it fails when segfault-check is done wrong.
         import __future__
-        compile('''b"a" + u"b"''', '<string>', 'single', flags=__future__.CO_FUTURE_EXPLICIT_ENCODING)
+        compile(
+                '''b"a" + u"b"''',
+                '<string>',
+                'single',
+                flags=__future__.CO_FUTURE_EXPLICIT_ENCODING,
+                dont_inherit=True,
+        )
 
 
 def test_main():

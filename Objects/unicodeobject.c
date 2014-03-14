@@ -1164,7 +1164,7 @@ PyObject *PyUnicode_FromObject(register PyObject *obj)
         return PyUnicode_FromEncodedObject(obj, NULL, "strict");
     } else {
         PyErr_SetString(PyExc_TypeError,
-                        "Can't convert 'bytes' object to str implicitly");
+                        "Can't convert 'str' object to unicode implicitly");
         return NULL;
     }
 }
