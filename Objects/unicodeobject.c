@@ -1156,7 +1156,11 @@ PyObject *PyUnicode_FromObject(register PyObject *obj)
     }
 
     int co_flags = PyThreadState_GetCOFlags();
-    if (!(co_flags & CO_FUTURE_EXPLICIT_ENCODING)) {
+    if (co_flags == -1) {
+        PyErr_SetString(PyExc_SystemError,
+                        "Couldn't get thread-state future flags");
+        return NULL;
+    } else if (!(co_flags & CO_FUTURE_EXPLICIT_ENCODING)) {
         return PyUnicode_FromEncodedObject(obj, NULL, "strict");
     } else {
         PyErr_SetString(PyExc_TypeError,
@@ -6453,7 +6457,11 @@ unicode_decode(PyUnicodeObject *self, PyObject *args, PyObject *kwargs)
     PyObject *v;
 
     int co_flags = PyThreadState_GetCOFlags();
-    if (co_flags & CO_FUTURE_EXPLICIT_ENCODING) {
+    if (co_flags == -1) {
+        PyErr_SetString(PyExc_SystemError,
+                        "Couldn't get thread-state future flags");
+        return NULL;
+    } else if (co_flags & CO_FUTURE_EXPLICIT_ENCODING) {
         PyErr_SetString(PyExc_TypeError,
                         "decoding Unicode is not supported");
         return NULL;

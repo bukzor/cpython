@@ -335,16 +335,15 @@ PyThreadState_Get(void)
 
 /* Get the code flags (co_flags) of the most-recent frame.
  * This is used for lexically scoped future-features.
+ * returns -1 on error.
  */
 int
 PyThreadState_GetCOFlags(void)
 {
-    PyThreadState *state = PyThreadState_Get();
-    PyFrameObject *frame = state->frame;
+    PyThreadState *tstate = PyThreadState_GET();
+    PyFrameObject *frame = tstate->frame;
     if (frame == NULL) {
-        PyErr_SetString(PyExc_SystemError,
-                        "could not find frame");
-        return NULL;
+        return -1;
     }
     PyCodeObject *f_code = frame->f_code;
     return f_code->co_flags;
