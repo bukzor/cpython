@@ -1,7 +1,5 @@
 # coding:UTF-8
-# Does it crash??
 from __future__ import explicit_encoding
-
 
 
 import unittest
@@ -29,9 +27,11 @@ class TestExplicitEncoding(unittest.TestCase):
     #  * .encode using unicode codec name
 
     def test_doesnt_crash(self):
+        """Does it crash??"""
         self.assertTrue(True)
 
     def test_concat_explicit(self):
+        """str and unicode can only be combined with explicit encoding."""
         self.assertRaisesRegexp(
             TypeError,
             "^Can't convert 'str' object to unicode implicitly$",
@@ -48,6 +48,7 @@ class TestExplicitEncoding(unittest.TestCase):
         )
 
     def test_concat_implicit(self):
+        """implicit encoding is still active for frames lower in the stack."""
         from .future_encoding_tests import concat_implicit
 
         self.assertEqual( 
@@ -61,6 +62,7 @@ class TestExplicitEncoding(unittest.TestCase):
         )
 
     def test_decoding(self):
+        """unicode.decode is nonsensical, nonexistant in python3"""
         self.assertRaisesRegexp(
             TypeError,
             "^decoding Unicode is not supported",
