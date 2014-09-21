@@ -9,16 +9,34 @@ from unicodedata import ucd_3_2_0 as unicodedata
 
 assert unicodedata.unidata_version == '3.2.0'
 
+
+def uniord(code):
+    ## FIXME: there's probably code somewhere for this that can be reused.
+    if len(code) != 2:
+        return ord(code)
+
+    lead = ord(code[0])
+    trail = ord(code[1])
+    assert 0xD800 <= lead < 0xDC00, 'invalid leading surrogate: %r' % lead
+    assert 0xDC00 <= trail < 0xE000, 'invalid trailing surrogate: %r' % trail
+
+    return (
+        0x10000 +
+        (lead - 0xD800) * 0x400 +
+        (trail - 0xDC00)
+    )
+
+
 def in_table_a1(code):
     if unicodedata.category(code) != 'Cn': return False
-    c = ord(code)
+    c = uniord(code)
     if 0xFDD0 <= c < 0xFDF0: return False
     return (c & 0xFFFF) not in (0xFFFE, 0xFFFF)
 
 
 b1_set = set([173, 847, 6150, 6155, 6156, 6157, 8203, 8204, 8205, 8288, 65279] + range(65024,65040))
 def in_table_b1(code):
-    return ord(code) in b1_set
+    return uniord(code) in b1_set
 
 
 b3_exceptions = {
@@ -187,7 +205,7 @@ b3_exceptions = {
 0x1d7a8:u'\u03c9', 0x1d7bb:u'\u03c3', }
 
 def map_table_b3(code):
-    r = b3_exceptions.get(ord(code))
+    r = b3_exceptions.get(uniord(code))
     if r is not None: return r
     return code.lower()
 
@@ -215,18 +233,18 @@ def in_table_c11_c12(code):
 
 
 def in_table_c21(code):
-    return ord(code) < 128 and unicodedata.category(code) == "Cc"
+    return uniord(code) < 128 and unicodedata.category(code) == "Cc"
 
 c22_specials = set([1757, 1807, 6158, 8204, 8205, 8232, 8233, 65279] + range(8288,8292) + range(8298,8304) + range(65529,65533) + range(119155,119163))
 def in_table_c22(code):
-    c = ord(code)
+    c = uniord(code)
     if c < 128: return False
     if unicodedata.category(code) == "Cc": return True
     return c in c22_specials
 
 def in_table_c21_c22(code):
     return unicodedata.category(code) == "Cc" or \
-           ord(code) in c22_specials
+           uniord(code) in c22_specials
 
 
 def in_table_c3(code):
@@ -234,10 +252,10 @@ def in_table_c3(code):
 
 
 def in_table_c4(code):
-    c = ord(code)
+    c = uniord(code)
     if c < 0xFDD0: return False
     if c < 0xFDF0: return True
-    return (ord(code) & 0xFFFF) in (0xFFFE, 0xFFFF)
+    return (uniord(code) & 0xFFFF) in (0xFFFE, 0xFFFF)
 
 
 def in_table_c5(code):
@@ -246,22 +264,22 @@ def in_table_c5(code):
 
 c6_set = set(range(65529,65534))
 def in_table_c6(code):
-    return ord(code) in c6_set
+    return uniord(code) in c6_set
 
 
 c7_set = set(range(12272,12284))
 def in_table_c7(code):
-    return ord(code) in c7_set
+    return uniord(code) in c7_set
 
 
 c8_set = set([832, 833, 8206, 8207] + range(8234,8239) + range(8298,8304))
 def in_table_c8(code):
-    return ord(code) in c8_set
+    return uniord(code) in c8_set
 
 
 c9_set = set([917505] + range(917536,917632))
 def in_table_c9(code):
-    return ord(code) in c9_set
+    return uniord(code) in c9_set
 
 
 def in_table_d1(code):

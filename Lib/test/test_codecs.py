@@ -965,7 +965,11 @@ punycode_testcases = [
     # (S) -> $1.00 <-
     (u"\u002D\u003E\u0020\u0024\u0031\u002E\u0030\u0030\u0020"
      u"\u003C\u002D",
-     "-> $1.00 <--")
+     "-> $1.00 <--"),
+
+    # Emoji monkeyface -- not from RFC
+    (u"monkey-face-\U0001f435",
+     "monkey-face--mu17k"),
     ]
 
 for i in punycode_testcases:
@@ -1292,6 +1296,16 @@ class IDNACodecTest(unittest.TestCase):
         self.assertEqual(encoder.encode(u"\xe4x"), "")
         self.assertEqual(encoder.encode(u"ample.org."), "xn--xample-9ta.org.")
         self.assertEqual(encoder.encode(u"", True), "")
+
+    def test_emoji(self):
+        self.assertEqual(
+            u"monkey-face-\U0001f435".encode("idna"),
+            "xn--monkey-face--mu17k"
+        )
+        self.assertEqual(
+            unicode("xn--monkey-face--mu17k", "idna"),
+            u"monkey-face-\U0001f435",
+        )
 
 class CodecsModuleTest(unittest.TestCase):
 

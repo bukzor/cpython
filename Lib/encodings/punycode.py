@@ -4,7 +4,7 @@
 Written by Martin v. Löwis.
 """
 
-import codecs
+import stringprep, codecs
 
 ##################### Encoding #####################################
 
@@ -13,19 +13,19 @@ def segregate(str):
     base = []
     extended = {}
     for c in str:
-        if ord(c) < 128:
-            base.append(c)
+        if c < 128:
+            base.append(chr(c))
         else:
             extended[c] = 1
     extended = extended.keys()
     extended.sort()
-    return "".join(base).encode("ascii"),extended
+    return "".join(base).encode("ascii"), extended
 
 def selective_len(str, max):
     """Return the length of str, considering only characters below max."""
     res = 0
     for c in str:
-        if ord(c) < max:
+        if c < max:
             res += 1
     return res
 
@@ -52,13 +52,12 @@ def insertion_unsort(str, extended):
     oldchar = 0x80
     result = []
     oldindex = -1
-    for c in extended:
+    for char in extended:
         index = pos = -1
-        char = ord(c)
         curlen = selective_len(str, char)
         delta = (curlen+1) * (char - oldchar)
         while 1:
-            index,pos = selective_find(str,c,index,pos)
+            index,pos = selective_find(str,char,index,pos)
             if index == -1:
                 break
             delta += index - oldindex
@@ -116,7 +115,24 @@ def generate_integers(baselen, deltas):
         bias = adapt(delta, points==0, baselen+points+1)
     return "".join(result)
 
+
+def ordlist(text):
+    """convert (possibly ucs2) unicode text to a list of integer ordinals"""
+    text = iter(text)
+    result = []
+    for char in text:
+        ordinal = ord(char)
+        ## FIXME: this is correct, but there's likely a better way to implement it
+        if 0xD800 <= ordinal < 0xDC00:
+            # leading surrogate
+            char += next(text)
+            ordinal = stringprep.uniord(char)
+        result.append(ordinal)
+    return result
+
+
 def punycode_encode(text):
+    text = ordlist(text)
     base, extended = segregate(text)
     base = base.encode("ascii")
     deltas = insertion_unsort(text, extended)

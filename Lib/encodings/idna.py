@@ -25,7 +25,12 @@ def nameprep(label):
     label = unicodedata.normalize("NFKC", label)
 
     # Prohibit
-    for c in label:
+    chars = iter(label)
+    for c in chars:
+        if 0xD800 <= ord(c) < 0xDC00:
+            # leading surrogate
+            c += next(chars)
+
         if stringprep.in_table_c12(c) or \
            stringprep.in_table_c22(c) or \
            stringprep.in_table_c3(c) or \
