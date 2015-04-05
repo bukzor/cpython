@@ -3790,49 +3790,17 @@ _PyObjectDict_SetItem(PyTypeObject *tp, PyObject **dictptr,
     PyDictKeysObject *cached;
 
     assert(dictptr != NULL);
-    if ((tp->tp_flags & Py_TPFLAGS_HEAPTYPE) && (cached = CACHED_KEYS(tp))) {
-        assert(dictptr != NULL);
-        dict = *dictptr;
-        if (dict == NULL) {
-            DK_INCREF(cached);
-            dict = new_dict_with_shared_keys(cached);
-            if (dict == NULL)
-                return -1;
-            *dictptr = dict;
-        }
-        if (value == NULL) {
-            res = PyDict_DelItem(dict, key);
-            if (cached != ((PyDictObject *)dict)->ma_keys) {
-                CACHED_KEYS(tp) = NULL;
-                DK_DECREF(cached);
-            }
-        } else {
-            res = PyDict_SetItem(dict, key, value);
-            if (cached != ((PyDictObject *)dict)->ma_keys) {
-                /* Either update tp->ht_cached_keys or delete it */
-                if (cached->dk_refcnt == 1) {
-                    CACHED_KEYS(tp) = make_keys_shared(dict);
-                } else {
-                    CACHED_KEYS(tp) = NULL;
-                }
-                DK_DECREF(cached);
-                if (CACHED_KEYS(tp) == NULL && PyErr_Occurred())
-                    return -1;
-            }
-        }
+    dict = *dictptr;
+    if (dict == NULL) {
+        dict = PyDict_New();
+        if (dict == NULL)
+            return -1;
+        *dictptr = dict;
+    }
+    if (value == NULL) {
+        res = PyObject_DelItem(dict, key);
     } else {
-        dict = *dictptr;
-        if (dict == NULL) {
-            dict = PyDict_New();
-            if (dict == NULL)
-                return -1;
-            *dictptr = dict;
-        }
-        if (value == NULL) {
-            res = PyDict_DelItem(dict, key);
-        } else {
-            res = PyDict_SetItem(dict, key, value);
-        }
+        res = PyObject_SetItem(dict, key, value);
     }
     return res;
 }
