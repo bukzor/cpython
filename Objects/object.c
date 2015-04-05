@@ -1084,9 +1084,14 @@ _PyObject_GenericGetAttrWithDict(PyObject *obj, PyObject *name, PyObject *dict)
     }
     if (dict != NULL) {
         Py_INCREF(dict);
-        res = PyDict_GetItem(dict, name);
-        if (res != NULL) {
-            Py_INCREF(res);
+        res = PyObject_GetItem(dict, name);
+        if (res == NULL) {
+            //buck: PyDict_GetItem clears all errors "for historical reasons".
+            //buck: To get the same behavior, we need to as well.
+            PyErr_Clear();
+        } else {
+            //buck: PyDict_GetItem returned a *borrowed* reference, so they needed to do an incref here.
+            //buck: PyObject_GetItem returns a *new* reference, so we don't now.
             Py_DECREF(dict);
             goto done;
         }

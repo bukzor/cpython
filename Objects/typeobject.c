@@ -2121,12 +2121,6 @@ subtype_setdict(PyObject *obj, PyObject *value, void *context)
                         "This object has no __dict__");
         return -1;
     }
-    if (value != NULL && !PyDict_Check(value)) {
-        PyErr_Format(PyExc_TypeError,
-                     "__dict__ must be set to a dictionary, "
-                     "not a '%.200s'", Py_TYPE(value)->tp_name);
-        return -1;
-    }
     dict = *dictptr;
     Py_XINCREF(value);
     *dictptr = value;
